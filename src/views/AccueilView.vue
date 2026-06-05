@@ -7,7 +7,6 @@
   Elle permet aux techniciens de rédiger un rapport, valider un ticket.
   </p>
 
-
   <p>
   Les employés peuvent également accéder à la plateforme pour signaler des incidents et créer des tickets de maintenance.
   </p>
