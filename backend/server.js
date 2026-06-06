@@ -15,15 +15,14 @@ password: "",
 database: "machine"
 });
 
+
 connexion.connect((erreur) => {
 
 if (erreur) {
     console.log("Erreur MySQL :", erreur);
     return;
 }
-
 console.log("Connexion MySQL réussie");
-
 });
 
 
@@ -40,11 +39,11 @@ connexion.query(
     }
 );
 
-
 });
 
-app.get("/tickets", (req, res) => {
 
+
+app.get("/tickets", (req, res) => {
 
 connexion.query(
     `SELECT
@@ -56,13 +55,13 @@ connexion.query(
         if (erreur) {
             return res.status(500).json(erreur);
         }
-
         res.json(resultats);
     }
 );
 
-
 });
+
+
 
 app.get("/ticket/:id", (req, res) => {
 
@@ -85,14 +84,12 @@ connexion.query(
                 message: "Ticket introuvable"
             });
         }
-
         res.json(resultats[0]);
-
     }
 );
-
-
 });
+
+
 
 app.post("/login", (req, res) => {
 
@@ -114,10 +111,7 @@ connexion.query(
             return res.status(500).json(erreur);
         }
 
-        if (
-            techniciens.length > 0 &&
-            techniciens[0].mdp_tech === mdpHash
-        ) {
+        if (techniciens.length > 0 && techniciens[0].mdp_tech === mdpHash) {
            return res.json({
     succes: true,
     role: "technicien",
@@ -136,10 +130,7 @@ connexion.query(
                     return res.status(500).json(erreur);
                 }
 
-                if (
-                    employes.length > 0 &&
-                    employes[0].mdp_emp === mdpHash
-                ) {
+                if (employes.length > 0 && employes[0].mdp_emp === mdpHash) {
                     return res.json({
     succes: true,
     role: "employe",
@@ -160,10 +151,10 @@ connexion.query(
     }
 );
 
-
 });
-app.post("/intervention", (req, res) => {
 
+
+app.post("/intervention", (req, res) => {
 
 const {
     id_ticket,
@@ -176,21 +167,14 @@ const date = new Date()
     .split("T")[0];
 
 connexion.query(
-    `INSERT INTO intervenir
-    (id_tech, id_ticket, date_, commentaire)
+    `INSERT INTO intervenir (id_tech, id_ticket, date_, commentaire)
     VALUES (?, ?, ?, ?)`,
-    [
-        id_tech,
-        id_ticket,
-        date,
-        commentaire
-    ],
+    [id_tech,id_ticket,date,commentaire],
     (erreur, resultat) => {
 
         if (erreur) {
             return res.status(500).json(erreur);
         }
-
         res.json({
             succes: true
         });
@@ -200,8 +184,9 @@ connexion.query(
 
 });
 
-app.get("/machines-employe/:id", (req, res) => {
 
+
+app.get("/machines-employe/:id", (req, res) => {
 
 const idEmp = req.params.id;
 
@@ -216,12 +201,9 @@ connexion.query(
         if (erreur) {
             return res.status(500).json(erreur);
         }
-
         res.json(resultats);
-
     }
 );
-
 
 });
 
@@ -235,12 +217,9 @@ connexion.query(
     if (erreur) {
         return res.status(500).json(erreur);
     }
-
     res.json(resultats);
-
 }
 );
-
 });
 
 
@@ -258,45 +237,30 @@ connexion.query(
     `INSERT INTO ticket
     (sujet, probleme, date_ticket, id_emp, id_machine)
     VALUES (?, ?, ?, ?, ?)`,
-    [
-        sujet,
-        probleme,
-        date_ticket,
-        id_emp,
-        id_machine
-    ],
+    [sujet,probleme,date_ticket,id_emp,id_machine],
     (erreur, resultat) => {
 
         if (erreur) {
             return res.status(500).json(erreur);
         }
-
         res.json({
             succes: true
         });
-
     }
 );
-
-
 });
 
 
 app.get("/pieces", (req, res) => {
 
-    connexion.query(
-        "SELECT * FROM piece",
-        (erreur, resultats) => {
+    connexion.query("SELECT * FROM piece",(erreur, resultats) => {
 
             if (erreur) {
                 return res.status(500).json(erreur);
             }
-
             res.json(resultats);
-
         }
     );
-
 });
 
 
@@ -307,15 +271,11 @@ app.post("/commande", (req, res) => {
         piecesCommande
     } = req.body;
 
-    connexion.query(
-        "INSERT INTO commande (date_commande) VALUES (?)",
-        [date_commande],
-        (erreur, resultat) => {
+    connexion.query("INSERT INTO commande (date_commande) VALUES (?)",[date_commande],(erreur, resultat) => {
 
             if (erreur) {
                 return res.status(500).json(erreur);
             }
-
             const reference = resultat.insertId;
 
             if (piecesCommande.length === 0) {
@@ -328,14 +288,9 @@ app.post("/commande", (req, res) => {
 
             piecesCommande.forEach(piece => {
 
-                connexion.query(
-                    `INSERT INTO contenir (reference, id_piece, quantite)
+                connexion.query(`INSERT INTO contenir (reference, id_piece, quantite)
                     VALUES (?, ?, ?)`,
-                    [
-                        reference,
-                        piece.id_piece,
-                        piece.quantite
-                    ],
+                    [reference,piece.id_piece,piece.quantite],
                     (erreur) => {
 
                         if (erreur) {
@@ -349,17 +304,12 @@ app.post("/commande", (req, res) => {
                             res.json({
                                 succes: true
                             });
-
                         }
-
                     }
                 );
-
             });
-
         }
     );
-
 });
 
 app.listen(3000, () => {

@@ -20,15 +20,12 @@
 
 <select v-model="id_piece">
 
-  <option value="">
-    Choisir une pièce
-  </option>
+  <option value="">Choisir une pièce</option>
 
   <option
     v-for="piece in pieces"
     :key="piece.id_piece"
-    :value="piece.id_piece"
-  >
+    :value="piece.id_piece">
     {{ piece.nom_piece }}
   </option>
 
@@ -46,9 +43,7 @@
 
 <br><br>
 
-<button @click="ajouterPiece">
-  Ajouter la pièce
-</button>
+<button @click="ajouterPiece">Ajouter la pièce</button>
 
 
 <h3>Pièces à commander</h3>
@@ -64,15 +59,11 @@
 
 <br>
 
-<button @click="creerCommande">
-  Créer la commande
-</button>
+<button @click="creerCommande">Créer la commande</button>
 
   </div>
   </div>
 </template>
-
-
 
 
 <script>
@@ -83,17 +74,11 @@ export default {
 
   data() {
     return {
-
       date_commande: "",
-
       pieces: [],
-
       id_piece: "",
-
       quantite: 1,
-
       piecesCommande: []
-
     };
   },
 
@@ -104,15 +89,11 @@ export default {
       const reponse = await axios.get(
         "http://localhost:3000/pieces"
       );
-
       this.pieces = reponse.data;
-
     }
 
     catch (erreur) {
-
       console.error(erreur);
-
     }
 
   },
@@ -125,31 +106,22 @@ export default {
         return;
       }
 
-      const pieceSelectionnee =
-        this.pieces.find(
-          p => p.id_piece == this.id_piece
-        );
+      const pieceSelectionnee = this.pieces.find(p => p.id_piece == this.id_piece);
 
       this.piecesCommande.push({
-
         id_piece: pieceSelectionnee.id_piece,
-
         nom: pieceSelectionnee.nom_piece,
-
         quantite: this.quantite
 
       });
 
       this.id_piece = "";
-
       this.quantite = 1;
-
     },
 
     async creerCommande() {
 
       try {
-
         await axios.post(
           "http://localhost:3000/commande",
           {
@@ -159,23 +131,15 @@ export default {
         );
 
         alert("Commande créée");
-
         this.$router.push("/listeticket");
 
       }
 
       catch (erreur) {
-
         console.error(erreur);
-
         alert("Erreur lors de la création");
-
       }
-
     }
-
   }
-
 };
-
 </script>
